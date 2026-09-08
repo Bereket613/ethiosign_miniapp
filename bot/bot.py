@@ -67,11 +67,9 @@ async def main() -> None:
 
     await bot.delete_webhook(drop_pending_updates=True)
 
-    @dp.startup()
-    async def on_startup(_) -> None:
-        me = await bot.get_me()
-        print(f"EthioSign demo bot running as @{me.username}")
-        print(f"Mini App: {webapp_url}")
+    me = await bot.get_me()
+    print(f"EthioSign demo bot running as @{me.username}")
+    print(f"Mini App: {webapp_url}")
 
     await dp.start_polling(bot)
 
