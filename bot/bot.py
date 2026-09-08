@@ -39,10 +39,12 @@ def main_keyboard(webapp_url: str) -> InlineKeyboardMarkup:
 
 
 async def cmd_start(message: Message, keyboard: InlineKeyboardMarkup) -> None:
+    print(f"/start from {message.from_user.id} ({message.from_user.first_name})")
     await message.answer(WELCOME, reply_markup=keyboard)
 
 
 async def any_message(message: Message, keyboard: InlineKeyboardMarkup) -> None:
+    print(f"message from {message.from_user.id}: {message.text!r}")
     await message.answer(WELCOME, reply_markup=keyboard)
 
 
@@ -62,8 +64,9 @@ async def main() -> None:
     bot = Bot(bot_token)
     dp = Dispatcher()
 
-    dp.message.register(lambda message: cmd_start(message, keyboard), CommandStart())
-    dp.message.register(lambda message: any_message(message, keyboard))
+    dp["keyboard"] = keyboard
+    dp.message.register(cmd_start, CommandStart())
+    dp.message.register(any_message)
 
     await bot.delete_webhook(drop_pending_updates=True)
 
