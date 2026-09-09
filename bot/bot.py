@@ -5,8 +5,10 @@ import pathlib
 from aiogram import Bot, Dispatcher
 from aiogram.filters import CommandStart
 from aiogram.types import (
+    BotCommand,
     InlineKeyboardButton,
     InlineKeyboardMarkup,
+    MenuButtonWebApp,
     Message,
     WebAppInfo,
 )
@@ -38,13 +40,36 @@ def main_keyboard(webapp_url: str) -> InlineKeyboardMarkup:
     )
 
 
-async def cmd_start(message: Message, keyboard: InlineKeyboardMarkup) -> None:
+async def pin_menu_button(message: Message, webapp_url: str) -> None:
+    try:
+        await message.bot.set_chat_menu_button(
+            chat_id=message.chat.id,
+            menu_button=MenuButtonWebApp(
+                text="Open EthioSign",
+                web_app=WebAppInfo(url=webapp_url),
+            ),
+        )
+    except Exception:
+        pass
+
+
+async def cmd_start(
+    message: Message,
+    keyboard: InlineKeyboardMarkup,
+    webapp_url: str,
+) -> None:
     print(f"/start from {message.from_user.id} ({message.from_user.first_name})")
+    await pin_menu_button(message, webapp_url)
     await message.answer(WELCOME, reply_markup=keyboard)
 
 
-async def any_message(message: Message, keyboard: InlineKeyboardMarkup) -> None:
+async def any_message(
+    message: Message,
+    keyboard: InlineKeyboardMarkup,
+    webapp_url: str,
+) -> None:
     print(f"message from {message.from_user.id}: {message.text!r}")
+    await pin_menu_button(message, webapp_url)
     await message.answer(WELCOME, reply_markup=keyboard)
 
 
@@ -65,10 +90,14 @@ async def main() -> None:
     dp = Dispatcher()
 
     dp["keyboard"] = keyboard
+    dp["webapp_url"] = webapp_url
     dp.message.register(cmd_start, CommandStart())
     dp.message.register(any_message)
 
     await bot.delete_webhook(drop_pending_updates=True)
+    await bot.set_my_commands(
+        [BotCommand(command="start", description="Open EthioSign")]
+    )
 
     me = await bot.get_me()
     print(f"EthioSign demo bot running as @{me.username}")
