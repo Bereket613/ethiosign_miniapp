@@ -1,5 +1,13 @@
+const MEDIA_BASE = import.meta.env ? import.meta.env.BASE_URL || "/" : "/";
+
 const DEMO_NOTICE =
   "Demo content. Replace with the authorized course material provided by the client.";
+
+export { MEDIA_BASE };
+
+function mediaPath(publicPath) {
+  return `${MEDIA_BASE}${publicPath.replace(/^\//, "")}`;
+}
 
 function demoTranscript(title) {
   return `This is a demo transcript for "${title}". ${DEMO_NOTICE} The full transcript will appear here once the lesson video is added.`;
@@ -22,9 +30,9 @@ function lesson(moduleNumber, sectionId, index, title, options = {}) {
     title,
     description: options.description || "Demo lesson. Replace with the authorized course content.",
     duration: options.duration || "2:00",
-    originalVideo: `/videos/modules/module-${moduleNumber}/${sectionId}/${slug}.mp4`,
-    signVideo: `/videos/signs/module-${moduleNumber}/${slug}.mp4`,
-    captions: `/captions/module-${moduleNumber}/${slug}.vtt`,
+    originalVideo: mediaPath(`/videos/modules/module-${moduleNumber}/${sectionId}/${slug}.mp4`),
+    signVideo: mediaPath(`/videos/signs/module-${moduleNumber}/${slug}.mp4`),
+    captions: mediaPath(`/captions/module-${moduleNumber}/${slug}.vtt`),
     transcript: options.transcript || demoTranscript(title),
     completed: false,
     demo: true,

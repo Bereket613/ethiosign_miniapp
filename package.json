@@ -7,7 +7,8 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "assets:placeholders": "node scripts/generate-placeholders.mjs"
+    "assets:placeholders": "node scripts/generate-placeholders.mjs",
+    "deploy:pages": "vite build --base=/ethiosign_miniapp/ && npx gh-pages -d dist"
   },
   "dependencies": {
     "react": "^18.3.1",

@@ -1,7 +1,13 @@
 import { copyFileSync, existsSync, mkdirSync, writeFileSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
-import { modules } from "../src/data/modules.js";
+import { modules, MEDIA_BASE } from "../src/data/modules.js";
+
+function publicRel(urlPath) {
+  const prefix = MEDIA_BASE === "/" ? "" : MEDIA_BASE.replace(/\/$/, "");
+  return (prefix && urlPath.startsWith(prefix) ? urlPath.slice(prefix.length) : urlPath)
+    .replace(/^\//, "");
+}
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const pub = join(root, "public");
@@ -42,9 +48,9 @@ let captions = 0;
 for (const module of modules) {
   for (const section of module.sections) {
     for (const lesson of section.lessons) {
-      const originalPath = join(pub, lesson.originalVideo.replace(/^\//, ""));
-      const signPath = join(pub, lesson.signVideo.replace(/^\//, ""));
-      const captionPath = join(pub, lesson.captions.replace(/^\//, ""));
+      const originalPath = join(pub, publicRel(lesson.originalVideo));
+      const signPath = join(pub, publicRel(lesson.signVideo));
+      const captionPath = join(pub, publicRel(lesson.captions));
 
       for (const target of [originalPath, signPath, captionPath]) {
         mkdirSync(dirname(target), { recursive: true });
