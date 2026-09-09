@@ -27,6 +27,20 @@ npm run build
 npm run preview
 ```
 
+### Permanent deployment (GitHub Pages)
+
+The live deployment URL: **https://bereket613.github.io/ethiosign_miniapp/**
+
+To redeploy after changes:
+
+```bash
+npm run deploy:pages
+```
+
+This builds with the `/ethiosign_miniapp/` base and pushes the `dist/` folder to
+the `gh-pages` branch. The site is permanent — no tunnels, no shutdowns.
+(Requires the repo to be public on the free plan.)
+
 ## 3. Folder creation (only if rebuilding from scratch)
 
 The `public/` media tree is created automatically by the placeholder script:
